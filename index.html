@@ -10,16 +10,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Market Open?">
-    <!-- App Icon for iOS home screen -->
     <link rel="apple-touch-icon" href="icon.png">
 
     <style>
-        /*
-        RETRO ASCII TERMINAL STYLE
-        Monospace font, box drawing characters, CRT glow
-        */
-        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-
         * {
             margin: 0;
             padding: 0;
@@ -28,291 +21,181 @@
 
         body {
             background-color: #0a0a0a;
-            color: #33ff33;
-            font-family: 'VT323', 'Courier New', monospace;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-            /* CRT screen glow effect */
-            text-shadow: 0 0 5px currentColor;
-        }
-
-        /* Scanline overlay for CRT effect */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15),
-                rgba(0, 0, 0, 0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-            z-index: 1000;
         }
 
         .container {
             text-align: center;
-            padding: 10px 20px;
-            max-width: 600px;
+            padding: 20px;
+            max-width: 500px;
             width: 100%;
         }
 
-        /* ASCII Box Frame */
-        .terminal-box {
-            border: 1px solid #33ff33;
-            padding: 20px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .terminal-box::before {
-            content: "┌─────────────────────────────────────────┐";
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #0a0a0a;
-            padding: 0 5px;
+        .title {
+            color: #666666;
             font-size: 14px;
-            letter-spacing: -1px;
-        }
-
-        /* Header with title */
-        .header {
-            color: #888888;
-            font-size: 16px;
+            font-weight: 600;
             letter-spacing: 2px;
-            margin-bottom: 0;
-            line-height: 1.2;
+            text-transform: uppercase;
+            margin-bottom: 30px;
         }
 
-        .header-line {
-            color: #444444;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        /* ASCII Art Answer */
         .answer {
-            font-size: 14px;
-            line-height: 1.0;
-            margin: 10px 0;
-            white-space: pre;
-            font-family: 'Courier New', monospace;
+            font-size: 120px;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px currentColor;
         }
 
         .answer.yes {
-            color: #33ff33;
-            text-shadow: 0 0 10px #33ff33, 0 0 20px #33ff33;
+            color: #00ff00;
         }
 
         .answer.no {
-            color: #ff3333;
-            text-shadow: 0 0 10px #ff3333, 0 0 20px #ff3333;
+            color: #ff4444;
         }
 
-        /* Context */
         .context {
             color: #ffaa00;
-            font-size: 18px;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px #ffaa00;
-        }
-
-        /* Clocks Section */
-        .clocks-section {
-            margin: 8px 0;
             font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
         }
 
-        .clock-row {
+        .clocks {
             display: flex;
-            justify-content: space-between;
-            margin: 2px 0;
-            padding: 0 20px;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .clock {
+            text-align: center;
         }
 
         .clock-label {
             color: #666666;
-            text-align: left;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
         }
 
         .clock-time {
-            color: #33ff33;
-            text-align: right;
+            color: #00cc00;
+            font-size: 16px;
+            font-weight: 600;
             font-variant-numeric: tabular-nums;
         }
 
-        .divider {
-            color: #333333;
-            font-size: 12px;
-            margin: 8px 0;
-            letter-spacing: -1px;
-        }
-
-        /* Countdown */
-        .countdown-section {
-            margin: 8px 0;
-        }
-
-        .countdown-label {
+        .countdown {
             color: #888888;
             font-size: 14px;
+            margin-bottom: 5px;
         }
 
         .countdown-time {
             color: #ffffff;
-            font-size: 28px;
+            font-size: 24px;
+            font-weight: 600;
             font-variant-numeric: tabular-nums;
-            text-shadow: 0 0 10px #ffffff;
         }
 
         .next-date {
             color: #666666;
-            font-size: 14px;
-            margin-top: 2px;
+            font-size: 12px;
+            margin-top: 5px;
+            margin-bottom: 30px;
         }
 
-        /* ASCII Timeline */
         .timeline {
-            margin: 10px 0 5px 0;
-            font-size: 12px;
+            margin-bottom: 20px;
         }
 
         .timeline-bar {
-            color: #333333;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
+            display: flex;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #222222;
+            margin-bottom: 8px;
         }
 
-        .timeline-bar .active {
-            color: #33ff33;
-            text-shadow: 0 0 5px #33ff33;
+        .timeline-segment {
+            height: 100%;
         }
 
-        .timeline-bar .active-yes {
-            color: #33ff33;
-        }
+        .timeline-pre { background: #333333; }
+        .timeline-regular { background: #444444; }
+        .timeline-after { background: #333333; }
 
-        .timeline-bar .active-no {
-            color: #ffaa00;
+        .timeline-segment.active {
+            background: #00cc00;
         }
 
         .timeline-labels {
             display: flex;
             justify-content: space-between;
             color: #444444;
-            font-size: 12px;
-            padding: 0 10px;
-        }
-
-        /* Footer */
-        .footer {
-            color: #333333;
-            font-size: 11px;
-            margin-top: 5px;
-        }
-
-        /* Blinking cursor effect */
-        .cursor {
-            animation: blink 1s step-end infinite;
-        }
-
-        @keyframes blink {
-            50% { opacity: 0; }
+            font-size: 10px;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <div class="header">╔══════════════════════════════════════╗</div>
-        <div class="header">║     IS THE MARKET OPEN?              ║</div>
-        <div class="header">╚══════════════════════════════════════╝</div>
+        <div class="title">Is the Market Open?</div>
 
-        <!-- ASCII Art Answer -->
-        <div id="answer" class="answer">Loading...</div>
+        <div id="answer" class="answer">--</div>
 
-        <!-- Context -->
-        <div id="context" class="context">CHECKING...</div>
+        <div id="context" class="context">Loading...</div>
 
-        <!-- Divider -->
-        <div class="divider">────────────────────────────────────────</div>
-
-        <!-- Clocks -->
-        <div class="clocks-section">
-            <div class="clock-row">
-                <span class="clock-label">NEW YORK ▸</span>
-                <span id="clock-ny" class="clock-time">--:--:-- --</span>
+        <div class="clocks">
+            <div class="clock">
+                <div class="clock-label">New York</div>
+                <div id="clock-ny" class="clock-time">--:--:--</div>
             </div>
-            <div class="clock-row">
-                <span class="clock-label">LOCAL    ▸</span>
-                <span id="clock-local" class="clock-time">--:--:-- --</span>
+            <div class="clock">
+                <div class="clock-label">Local</div>
+                <div id="clock-local" class="clock-time">--:--:--</div>
             </div>
-            <div class="clock-row">
-                <span class="clock-label">UTC      ▸</span>
-                <span id="clock-utc" class="clock-time">--:--:--</span>
+            <div class="clock">
+                <div class="clock-label">UTC</div>
+                <div id="clock-utc" class="clock-time">--:--:--</div>
             </div>
         </div>
 
-        <!-- Divider -->
-        <div class="divider">────────────────────────────────────────</div>
-
-        <!-- Countdown -->
-        <div class="countdown-section">
-            <div class="countdown-label">&gt; <span id="countdown-label">Opens in</span></div>
-            <div id="countdown-time" class="countdown-time">--:--:--</div>
-            <div id="next-date" class="next-date"></div>
+        <div class="countdown">
+            <span id="countdown-label">Opens in</span>
         </div>
+        <div id="countdown-time" class="countdown-time">--:--:--</div>
+        <div id="next-date" class="next-date"></div>
 
-        <!-- ASCII Timeline -->
         <div class="timeline">
-            <div id="timeline-bar" class="timeline-bar">
-                [░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░]
+            <div class="timeline-bar">
+                <div id="seg-pre" class="timeline-segment timeline-pre" style="width: 34%"></div>
+                <div id="seg-regular" class="timeline-segment timeline-regular" style="width: 41%"></div>
+                <div id="seg-after" class="timeline-segment timeline-after" style="width: 25%"></div>
             </div>
             <div class="timeline-labels">
-                <span>04:00</span>
-                <span>09:30</span>
-                <span>16:00</span>
-                <span>20:00</span>
+                <span>Pre</span>
+                <span>Regular</span>
+                <span>After</span>
             </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            PRE-MKT ░░░░ │ REGULAR ████ │ AFTER ░░░░
         </div>
     </div>
 
     <script>
-        // ASCII Art for YES and NO
-        const YES_ASCII = `
-██╗   ██╗███████╗███████╗
-╚██╗ ██╔╝██╔════╝██╔════╝
- ╚████╔╝ █████╗  ███████╗
-  ╚██╔╝  ██╔══╝  ╚════██║
-   ██║   ███████╗███████║
-   ╚═╝   ╚══════╝╚══════╝`.trim();
-
-        const NO_ASCII = `
-███╗   ██╗ ██████╗
-████╗  ██║██╔═══██╗
-██╔██╗ ██║██║   ██║
-██║╚██╗██║██║   ██║
-██║ ╚████║╚██████╔╝
-╚═╝  ╚═══╝ ╚═════╝ `.trim();
-
-        // US Market Holidays 2024-2026
         const US_HOLIDAYS = {
             '2024-01-01': "New Year's Day",
             '2024-01-15': "MLK Day",
@@ -346,11 +229,10 @@
             '2026-12-25': "Christmas",
         };
 
-        // Market hours (minutes from midnight ET)
-        const PREMARKET_OPEN = 4 * 60;      // 4:00 AM
-        const MARKET_OPEN = 9 * 60 + 30;    // 9:30 AM
-        const MARKET_CLOSE = 16 * 60;       // 4:00 PM
-        const AFTERHOURS_CLOSE = 20 * 60;   // 8:00 PM
+        const PREMARKET_OPEN = 4 * 60;
+        const MARKET_OPEN = 9 * 60 + 30;
+        const MARKET_CLOSE = 16 * 60;
+        const AFTERHOURS_CLOSE = 20 * 60;
 
         function getNYTime() {
             return new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
@@ -453,7 +335,7 @@
                 return {
                     label,
                     time: `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`,
-                    date: targetDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+                    date: targetDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
                 };
             }
 
@@ -472,56 +354,20 @@
             };
         }
 
-        function buildTimeline(status) {
-            // Total trading window: 4AM to 8PM = 16 hours = 960 minutes
-            // Bar width: 40 characters
-            const barWidth = 40;
-            const totalMinutes = 16 * 60; // 4AM to 8PM
-
-            // Calculate segment widths
-            const preWidth = Math.floor(((MARKET_OPEN - PREMARKET_OPEN) / totalMinutes) * barWidth);
-            const regWidth = Math.floor(((MARKET_CLOSE - MARKET_OPEN) / totalMinutes) * barWidth);
-            const afterWidth = barWidth - preWidth - regWidth;
-
-            let pre = '░'.repeat(preWidth);
-            let reg = '█'.repeat(regWidth);
-            let after = '░'.repeat(afterWidth);
-
-            // Highlight active session
-            if (status.session === 'PRE-MARKET') {
-                pre = `<span class="active-no">${'▓'.repeat(preWidth)}</span>`;
-                reg = '░'.repeat(regWidth);
-                after = '░'.repeat(afterWidth);
-            } else if (status.session === 'REGULAR') {
-                pre = '░'.repeat(preWidth);
-                reg = `<span class="active-yes">${'█'.repeat(regWidth)}</span>`;
-                after = '░'.repeat(afterWidth);
-            } else if (status.session === 'AFTER-HOURS') {
-                pre = '░'.repeat(preWidth);
-                reg = '░'.repeat(regWidth);
-                after = `<span class="active-no">${'▓'.repeat(afterWidth)}</span>`;
-            }
-
-            return `[${pre}${reg}${after}]`;
-        }
-
         function updateUI() {
             const status = getMarketStatus();
 
-            // Update ASCII art answer
             const answerEl = document.getElementById('answer');
-            answerEl.innerHTML = status.isOpen ? YES_ASCII : NO_ASCII;
+            answerEl.textContent = status.isOpen ? 'YES' : 'NO';
             answerEl.className = 'answer ' + (status.isOpen ? 'yes' : 'no');
 
-            // Update context
             const contextEl = document.getElementById('context');
             if (status.holidayName) {
-                contextEl.textContent = `[ ${status.holidayName.toUpperCase()} ]`;
+                contextEl.textContent = status.holidayName;
             } else {
-                contextEl.textContent = `[ ${status.session} ]`;
+                contextEl.textContent = status.session;
             }
 
-            // Update clocks
             const now = new Date();
             const nyTime = new Date(getNYTime());
 
@@ -535,17 +381,25 @@
                 timeZone: 'UTC'
             });
 
-            // Update countdown
             const countdown = getCountdown();
             document.getElementById('countdown-label').textContent = countdown.label;
             document.getElementById('countdown-time').textContent = countdown.time;
-            document.getElementById('next-date').textContent = countdown.date ? `[ ${countdown.date} ]` : '';
+            document.getElementById('next-date').textContent = countdown.date || '';
 
-            // Update timeline
-            document.getElementById('timeline-bar').innerHTML = buildTimeline(status);
+            const segments = ['pre', 'regular', 'after'];
+            segments.forEach(seg => {
+                document.getElementById(`seg-${seg}`).classList.remove('active');
+            });
+
+            if (status.session === 'PRE-MARKET') {
+                document.getElementById('seg-pre').classList.add('active');
+            } else if (status.session === 'REGULAR') {
+                document.getElementById('seg-regular').classList.add('active');
+            } else if (status.session === 'AFTER-HOURS') {
+                document.getElementById('seg-after').classList.add('active');
+            }
         }
 
-        // Start the app
         updateUI();
         setInterval(updateUI, 1000);
     </script>
