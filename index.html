@@ -2,36 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
-    <!--
-    VIEWPORT META TAG
-    This tells mobile browsers how to scale the page.
-    width=device-width: Match the screen width
-    initial-scale=1.0: Don't zoom in/out by default
-    viewport-fit=cover: Use the full screen (including iPhone notch area)
-    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
     <title>Is Market Open?</title>
 
-    <!--
-    PWA META TAGS
-    These make the web app feel more "native" when added to home screen
-    -->
-    <!-- Theme color - affects browser UI color on Android/iOS -->
+    <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0a0a0a">
-    <!-- Apple-specific: enables full-screen mode when launched from home screen -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <!-- Apple-specific: makes the status bar blend with our dark background -->
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- Apple-specific: the name shown under the home screen icon -->
     <meta name="apple-mobile-web-app-title" content="Market Open?">
 
     <style>
         /*
-        CSS RESET & BASE STYLES
-        These establish our dark theme and typography
+        RETRO ASCII TERMINAL STYLE
+        Monospace font, box drawing characters, CRT glow
         */
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -39,284 +25,334 @@
         }
 
         body {
-            /* Dark background like our terminal app */
             background-color: #0a0a0a;
-            color: #ffffff;
-
-            /* System font stack - uses the native font on each platform */
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-
-            /* Center everything vertically and horizontally */
+            color: #33ff33;
+            font-family: 'VT323', 'Courier New', monospace;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-
-            /* Safe area padding for iPhone notch/home indicator */
             padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+            /* CRT screen glow effect */
+            text-shadow: 0 0 5px currentColor;
         }
 
-        /*
-        MAIN CONTAINER
-        Holds all our content, centered with max width for readability
-        */
+        /* Scanline overlay for CRT effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+
         .container {
             text-align: center;
             padding: 20px;
-            max-width: 500px;
+            max-width: 600px;
             width: 100%;
         }
 
-        /*
-        TITLE - "IS THE MARKET OPEN?"
-        Gray, subdued - not the focus
-        */
-        .title {
-            color: #666666;
+        /* ASCII Box Frame */
+        .terminal-box {
+            border: 1px solid #33ff33;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .terminal-box::before {
+            content: "┌─────────────────────────────────────────┐";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0a0a0a;
+            padding: 0 5px;
             font-size: 14px;
-            font-weight: 600;
+            letter-spacing: -1px;
+        }
+
+        /* Header with title */
+        .header {
+            color: #888888;
+            font-size: 18px;
             letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 30px;
-        }
-
-        /*
-        ANSWER - "YES" or "NO"
-        This is the star of the show - big and bold
-        */
-        .answer {
-            font-size: 120px;
-            font-weight: 900;
-            line-height: 1;
             margin-bottom: 10px;
-            /* Text shadow for a subtle glow effect */
-            text-shadow: 0 0 30px currentColor;
         }
 
-        /* Color classes - applied dynamically via JavaScript */
+        .header-line {
+            color: #444444;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* ASCII Art Answer */
+        .answer {
+            font-size: 16px;
+            line-height: 1.1;
+            margin: 20px 0;
+            white-space: pre;
+            font-family: 'Courier New', monospace;
+        }
+
         .answer.yes {
-            color: #00ff00;
+            color: #33ff33;
+            text-shadow: 0 0 10px #33ff33, 0 0 20px #33ff33;
         }
 
         .answer.no {
-            color: #ff4444;
+            color: #ff3333;
+            text-shadow: 0 0 10px #ff3333, 0 0 20px #ff3333;
         }
 
-        /*
-        CONTEXT - Holiday name or session type
-        Amber color, supporting info
-        */
+        /* Context */
         .context {
             color: #ffaa00;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 40px;
-        }
-
-        /*
-        CLOCKS SECTION
-        Three clocks in a row
-        */
-        .clocks {
-            display: flex;
-            justify-content: space-around;
+            font-size: 20px;
+            letter-spacing: 2px;
             margin-bottom: 30px;
-            gap: 20px;
+            text-shadow: 0 0 10px #ffaa00;
         }
 
-        .clock {
-            text-align: center;
+        /* Clocks Section */
+        .clocks-section {
+            margin: 20px 0;
+            font-size: 16px;
+        }
+
+        .clock-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            padding: 0 20px;
         }
 
         .clock-label {
             color: #666666;
-            font-size: 10px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 5px;
+            text-align: left;
         }
 
         .clock-time {
-            color: #00cc00;
-            font-size: 16px;
-            font-weight: 600;
-            font-variant-numeric: tabular-nums; /* Keeps numbers from jumping */
+            color: #33ff33;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
         }
 
-        /*
-        COUNTDOWN
-        When does the market open/close?
-        */
-        .countdown {
-            color: #888888;
+        .divider {
+            color: #333333;
             font-size: 14px;
-            margin-bottom: 5px;
+            margin: 15px 0;
+            letter-spacing: -1px;
+        }
+
+        /* Countdown */
+        .countdown-section {
+            margin: 20px 0;
+        }
+
+        .countdown-label {
+            color: #888888;
+            font-size: 16px;
         }
 
         .countdown-time {
             color: #ffffff;
-            font-size: 24px;
-            font-weight: 600;
+            font-size: 32px;
             font-variant-numeric: tabular-nums;
+            text-shadow: 0 0 10px #ffffff;
         }
 
         .next-date {
             color: #666666;
-            font-size: 12px;
+            font-size: 16px;
             margin-top: 5px;
-            margin-bottom: 30px;
         }
 
-        /*
-        TIMELINE BAR
-        Visual representation of the trading day
-        */
+        /* ASCII Timeline */
         .timeline {
-            margin-bottom: 20px;
+            margin: 30px 0 10px 0;
+            font-size: 14px;
         }
 
         .timeline-bar {
-            display: flex;
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-            background: #222222;
-            margin-bottom: 8px;
+            color: #333333;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
         }
 
-        .timeline-segment {
-            height: 100%;
+        .timeline-bar .active {
+            color: #33ff33;
+            text-shadow: 0 0 5px #33ff33;
         }
 
-        .timeline-pre { background: #333333; }
-        .timeline-regular { background: #444444; }
-        .timeline-after { background: #333333; }
+        .timeline-bar .active-yes {
+            color: #33ff33;
+        }
 
-        /* Highlight the active segment */
-        .timeline-segment.active {
-            background: #00cc00;
+        .timeline-bar .active-no {
+            color: #ffaa00;
         }
 
         .timeline-labels {
             display: flex;
             justify-content: space-between;
             color: #444444;
-            font-size: 10px;
-            text-transform: uppercase;
+            font-size: 12px;
+            padding: 0 10px;
+        }
+
+        /* Footer */
+        .footer {
+            color: #333333;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        /* Blinking cursor effect */
+        .cursor {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <!--
-    HTML STRUCTURE
-    Simple, semantic, matches our terminal app layout
-    -->
     <div class="container">
-        <div class="title">Is the Market Open?</div>
+        <!-- Header -->
+        <div class="header">╔══════════════════════════════════════╗</div>
+        <div class="header">║     IS THE MARKET OPEN?              ║</div>
+        <div class="header">╚══════════════════════════════════════╝</div>
 
-        <div id="answer" class="answer">--</div>
+        <!-- ASCII Art Answer -->
+        <div id="answer" class="answer">Loading...</div>
 
-        <div id="context" class="context">Loading...</div>
+        <!-- Context -->
+        <div id="context" class="context">CHECKING...</div>
 
-        <div class="clocks">
-            <div class="clock">
-                <div class="clock-label">New York</div>
-                <div id="clock-ny" class="clock-time">--:--:--</div>
+        <!-- Divider -->
+        <div class="divider">────────────────────────────────────────</div>
+
+        <!-- Clocks -->
+        <div class="clocks-section">
+            <div class="clock-row">
+                <span class="clock-label">NEW YORK ▸</span>
+                <span id="clock-ny" class="clock-time">--:--:-- --</span>
             </div>
-            <div class="clock">
-                <div class="clock-label">Local</div>
-                <div id="clock-local" class="clock-time">--:--:--</div>
+            <div class="clock-row">
+                <span class="clock-label">LOCAL    ▸</span>
+                <span id="clock-local" class="clock-time">--:--:-- --</span>
             </div>
-            <div class="clock">
-                <div class="clock-label">UTC</div>
-                <div id="clock-utc" class="clock-time">--:--:--</div>
+            <div class="clock-row">
+                <span class="clock-label">UTC      ▸</span>
+                <span id="clock-utc" class="clock-time">--:--:--</span>
             </div>
         </div>
 
-        <div class="countdown">
-            <span id="countdown-label">Opens in</span>
-        </div>
-        <div id="countdown-time" class="countdown-time">--:--:--</div>
-        <div id="next-date" class="next-date"></div>
+        <!-- Divider -->
+        <div class="divider">────────────────────────────────────────</div>
 
+        <!-- Countdown -->
+        <div class="countdown-section">
+            <div class="countdown-label">&gt; <span id="countdown-label">Opens in</span></div>
+            <div id="countdown-time" class="countdown-time">--:--:--</div>
+            <div id="next-date" class="next-date"></div>
+        </div>
+
+        <!-- ASCII Timeline -->
         <div class="timeline">
-            <div class="timeline-bar">
-                <div id="seg-pre" class="timeline-segment timeline-pre" style="width: 34%"></div>
-                <div id="seg-regular" class="timeline-segment timeline-regular" style="width: 41%"></div>
-                <div id="seg-after" class="timeline-segment timeline-after" style="width: 25%"></div>
+            <div id="timeline-bar" class="timeline-bar">
+                [░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░]
             </div>
             <div class="timeline-labels">
-                <span>Pre</span>
-                <span>Regular</span>
-                <span>After</span>
+                <span>04:00</span>
+                <span>09:30</span>
+                <span>16:00</span>
+                <span>20:00</span>
             </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            PRE-MKT ░░░░ │ REGULAR ████ │ AFTER ░░░░
         </div>
     </div>
 
     <script>
-        /*
-        JAVASCRIPT - Market Hours Logic
-        This is the brain of the app - ported from our Python code
-        */
+        // ASCII Art for YES and NO
+        const YES_ASCII = `
+██╗   ██╗███████╗███████╗
+╚██╗ ██╔╝██╔════╝██╔════╝
+ ╚████╔╝ █████╗  ███████╗
+  ╚██╔╝  ██╔══╝  ╚════██║
+   ██║   ███████╗███████║
+   ╚═╝   ╚══════╝╚══════╝`.trim();
 
-        // US Market Holidays for 2024-2026
-        // Format: 'YYYY-MM-DD': 'Holiday Name'
+        const NO_ASCII = `
+███╗   ██╗ ██████╗
+████╗  ██║██╔═══██╗
+██╔██╗ ██║██║   ██║
+██║╚██╗██║██║   ██║
+██║ ╚████║╚██████╔╝
+╚═╝  ╚═══╝ ╚═════╝ `.trim();
+
+        // US Market Holidays 2024-2026
         const US_HOLIDAYS = {
-            // 2024
             '2024-01-01': "New Year's Day",
-            '2024-01-15': "Martin Luther King Jr. Day",
-            '2024-02-19': "Presidents' Day",
+            '2024-01-15': "MLK Day",
+            '2024-02-19': "Presidents Day",
             '2024-03-29': "Good Friday",
             '2024-05-27': "Memorial Day",
             '2024-06-19': "Juneteenth",
             '2024-07-04': "Independence Day",
             '2024-09-02': "Labor Day",
-            '2024-11-28': "Thanksgiving Day",
-            '2024-12-25': "Christmas Day",
-            // 2025
+            '2024-11-28': "Thanksgiving",
+            '2024-12-25': "Christmas",
             '2025-01-01': "New Year's Day",
-            '2025-01-20': "Martin Luther King Jr. Day",
-            '2025-02-17': "Presidents' Day",
+            '2025-01-20': "MLK Day",
+            '2025-02-17': "Presidents Day",
             '2025-04-18': "Good Friday",
             '2025-05-26': "Memorial Day",
             '2025-06-19': "Juneteenth",
             '2025-07-04': "Independence Day",
             '2025-09-01': "Labor Day",
-            '2025-11-27': "Thanksgiving Day",
-            '2025-12-25': "Christmas Day",
-            // 2026
+            '2025-11-27': "Thanksgiving",
+            '2025-12-25': "Christmas",
             '2026-01-01': "New Year's Day",
-            '2026-01-19': "Martin Luther King Jr. Day",
-            '2026-02-16': "Presidents' Day",
+            '2026-01-19': "MLK Day",
+            '2026-02-16': "Presidents Day",
             '2026-04-03': "Good Friday",
             '2026-05-25': "Memorial Day",
             '2026-06-19': "Juneteenth",
-            '2026-07-03': "Independence Day (Observed)",
+            '2026-07-03': "Independence Day",
             '2026-09-07': "Labor Day",
-            '2026-11-26': "Thanksgiving Day",
-            '2026-12-25': "Christmas Day",
+            '2026-11-26': "Thanksgiving",
+            '2026-12-25': "Christmas",
         };
 
-        // Market hours in Eastern Time (minutes from midnight)
-        const PREMARKET_OPEN = 4 * 60;      // 4:00 AM = 240 minutes
-        const MARKET_OPEN = 9 * 60 + 30;    // 9:30 AM = 570 minutes
-        const MARKET_CLOSE = 16 * 60;       // 4:00 PM = 960 minutes
-        const AFTERHOURS_CLOSE = 20 * 60;   // 8:00 PM = 1200 minutes
+        // Market hours (minutes from midnight ET)
+        const PREMARKET_OPEN = 4 * 60;      // 4:00 AM
+        const MARKET_OPEN = 9 * 60 + 30;    // 9:30 AM
+        const MARKET_CLOSE = 16 * 60;       // 4:00 PM
+        const AFTERHOURS_CLOSE = 20 * 60;   // 8:00 PM
 
-        /**
-         * Get current time in New York (Eastern Time)
-         * JavaScript handles DST automatically with toLocaleString
-         */
         function getNYTime() {
             return new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
         }
 
-        /**
-         * Get NY date as YYYY-MM-DD string for holiday lookup
-         */
         function getNYDateString() {
             const ny = new Date(getNYTime());
             const year = ny.getFullYear();
@@ -325,27 +361,17 @@
             return `${year}-${month}-${day}`;
         }
 
-        /**
-         * Get minutes since midnight in NY time
-         */
         function getNYMinutes() {
             const ny = new Date(getNYTime());
             return ny.getHours() * 60 + ny.getMinutes();
         }
 
-        /**
-         * Check if today is a weekend in NY
-         */
         function isWeekend() {
             const ny = new Date(getNYTime());
-            const day = ny.getDay(); // 0 = Sunday, 6 = Saturday
+            const day = ny.getDay();
             return day === 0 || day === 6;
         }
 
-        /**
-         * Check if today is a market holiday
-         * Returns [isHoliday, holidayName]
-         */
         function isHoliday() {
             const dateStr = getNYDateString();
             if (US_HOLIDAYS[dateStr]) {
@@ -354,23 +380,16 @@
             return [false, null];
         }
 
-        /**
-         * Get the current market status
-         * Returns { isOpen, session, holidayName }
-         */
         function getMarketStatus() {
-            // Check weekend first
             if (isWeekend()) {
                 return { isOpen: false, session: 'WEEKEND', holidayName: null };
             }
 
-            // Check holiday
             const [holiday, holidayName] = isHoliday();
             if (holiday) {
                 return { isOpen: false, session: 'HOLIDAY', holidayName };
             }
 
-            // Check time-based sessions
             const minutes = getNYMinutes();
 
             if (minutes >= MARKET_OPEN && minutes < MARKET_CLOSE) {
@@ -384,9 +403,6 @@
             }
         }
 
-        /**
-         * Format time as HH:MM:SS
-         */
         function formatTime(date, use12Hour = true) {
             return date.toLocaleTimeString('en-US', {
                 hour: '2-digit',
@@ -396,9 +412,6 @@
             });
         }
 
-        /**
-         * Calculate countdown to next market event
-         */
         function getCountdown() {
             const status = getMarketStatus();
             const now = new Date(getNYTime());
@@ -409,33 +422,24 @@
             let targetDate = new Date(now);
 
             if (status.isOpen) {
-                // Market is open - countdown to close
                 targetMinutes = MARKET_CLOSE;
                 label = 'Closes in';
             } else if (status.session === 'PRE-MARKET') {
-                // Pre-market - countdown to open
                 targetMinutes = MARKET_OPEN;
                 label = 'Opens in';
             } else {
-                // After hours, closed, weekend, or holiday
-                // Find next trading day
                 label = 'Opens in';
-
-                // Start from tomorrow
                 targetDate.setDate(targetDate.getDate() + 1);
 
-                // Skip weekends and holidays
                 while (true) {
                     const day = targetDate.getDay();
                     const dateStr = targetDate.toISOString().split('T')[0];
-
                     if (day !== 0 && day !== 6 && !US_HOLIDAYS[dateStr]) {
                         break;
                     }
                     targetDate.setDate(targetDate.getDate() + 1);
                 }
 
-                // Set to pre-market open (4:00 AM)
                 targetDate.setHours(4, 0, 0, 0);
 
                 const diff = targetDate - now;
@@ -446,11 +450,10 @@
                 return {
                     label,
                     time: `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`,
-                    date: targetDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
+                    date: targetDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
                 };
             }
 
-            // Calculate time until target (same day)
             const targetMs = targetMinutes * 60 * 1000;
             const nowMs = (now.getHours() * 60 + now.getMinutes()) * 60 * 1000 + now.getSeconds() * 1000;
             const diff = targetMs - nowMs;
@@ -466,23 +469,53 @@
             };
         }
 
-        /**
-         * Update the entire UI - called every second
-         */
+        function buildTimeline(status) {
+            // Total trading window: 4AM to 8PM = 16 hours = 960 minutes
+            // Bar width: 40 characters
+            const barWidth = 40;
+            const totalMinutes = 16 * 60; // 4AM to 8PM
+
+            // Calculate segment widths
+            const preWidth = Math.floor(((MARKET_OPEN - PREMARKET_OPEN) / totalMinutes) * barWidth);
+            const regWidth = Math.floor(((MARKET_CLOSE - MARKET_OPEN) / totalMinutes) * barWidth);
+            const afterWidth = barWidth - preWidth - regWidth;
+
+            let pre = '░'.repeat(preWidth);
+            let reg = '█'.repeat(regWidth);
+            let after = '░'.repeat(afterWidth);
+
+            // Highlight active session
+            if (status.session === 'PRE-MARKET') {
+                pre = `<span class="active-no">${'▓'.repeat(preWidth)}</span>`;
+                reg = '░'.repeat(regWidth);
+                after = '░'.repeat(afterWidth);
+            } else if (status.session === 'REGULAR') {
+                pre = '░'.repeat(preWidth);
+                reg = `<span class="active-yes">${'█'.repeat(regWidth)}</span>`;
+                after = '░'.repeat(afterWidth);
+            } else if (status.session === 'AFTER-HOURS') {
+                pre = '░'.repeat(preWidth);
+                reg = '░'.repeat(regWidth);
+                after = `<span class="active-no">${'▓'.repeat(afterWidth)}</span>`;
+            }
+
+            return `[${pre}${reg}${after}]`;
+        }
+
         function updateUI() {
             const status = getMarketStatus();
 
-            // Update answer
+            // Update ASCII art answer
             const answerEl = document.getElementById('answer');
-            answerEl.textContent = status.isOpen ? 'YES' : 'NO';
+            answerEl.innerHTML = status.isOpen ? YES_ASCII : NO_ASCII;
             answerEl.className = 'answer ' + (status.isOpen ? 'yes' : 'no');
 
             // Update context
             const contextEl = document.getElementById('context');
             if (status.holidayName) {
-                contextEl.textContent = status.holidayName;
+                contextEl.textContent = `[ ${status.holidayName.toUpperCase()} ]`;
             } else {
-                contextEl.textContent = status.session;
+                contextEl.textContent = `[ ${status.session} ]`;
             }
 
             // Update clocks
@@ -491,31 +524,25 @@
 
             document.getElementById('clock-ny').textContent = formatTime(nyTime);
             document.getElementById('clock-local').textContent = formatTime(now);
-            document.getElementById('clock-utc').textContent = formatTime(now, false).replace(/ [AP]M/, '');
+            document.getElementById('clock-utc').textContent = now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+                timeZone: 'UTC'
+            });
 
             // Update countdown
             const countdown = getCountdown();
             document.getElementById('countdown-label').textContent = countdown.label;
             document.getElementById('countdown-time').textContent = countdown.time;
-            document.getElementById('next-date').textContent = countdown.date || '';
+            document.getElementById('next-date').textContent = countdown.date ? `[ ${countdown.date} ]` : '';
 
             // Update timeline
-            const segments = ['pre', 'regular', 'after'];
-            segments.forEach(seg => {
-                document.getElementById(`seg-${seg}`).classList.remove('active');
-            });
-
-            if (status.session === 'PRE-MARKET') {
-                document.getElementById('seg-pre').classList.add('active');
-            } else if (status.session === 'REGULAR') {
-                document.getElementById('seg-regular').classList.add('active');
-            } else if (status.session === 'AFTER-HOURS') {
-                document.getElementById('seg-after').classList.add('active');
-            }
+            document.getElementById('timeline-bar').innerHTML = buildTimeline(status);
         }
 
-        // Start the app!
-        // Update immediately, then every second
+        // Start the app
         updateUI();
         setInterval(updateUI, 1000);
     </script>
